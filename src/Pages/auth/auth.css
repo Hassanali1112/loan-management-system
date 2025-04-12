@@ -1,0 +1,34 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #c2c6cf;
+}
+
+.form_Container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.form_Container .form {
+  min-width: 400px;
+  border: 1px solid #9ca3af;
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: rgb(255, 255, 255);
+
+}
+
+.form_Container .form input{
+  box-shadow: 6px 6px 3px black;
+  transition: all linear .5s;
+}
+
+.form_Container .form input:hover {
+ transform: scale(1.04);
+ background-color: orange;
+}

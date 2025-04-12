@@ -1,0 +1,8 @@
+const LoanRequest = () =>{
+
+  return (
+    <>
+    hello
+    </>
+  )
+}

@@ -1,0 +1,11 @@
+.form_Container {
+  display: flex;
+  justify-content: center;
+}
+
+.form_Container form {
+  width: 700px;
+  border: 1px solid red;
+  padding: 3rem;
+  border-radius: 8px;
+}

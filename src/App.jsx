@@ -5,6 +5,9 @@ import './App.css'
 import Login from "./Pages/auth/Login";
 import Registeration from './Pages/auth/Registeration'
 import { getUsers } from "./Utils/config";
+import { Link } from "react-router-dom";
+import Dashboard from "./Pages/Dashboard";
+
 // import DashboardLayoutBasic from "./Components/Dashboard/Dashboard";
 
 function App() {
@@ -21,12 +24,7 @@ function App() {
 
   return (
     <>
-      <div className="container">
-        {/* <Login /> */}
-        {/* <Registeration /> */}
-        {/* <DashboardLayoutBasic /> */}
-        hello
-      </div>
+     <Dashboard />
     </>
   );
 }

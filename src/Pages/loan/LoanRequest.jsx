@@ -33,6 +33,13 @@ const LoanRequestForm = () => {
 
   
 
+  const personalData = () =>{
+    console.log(name,email,number,dob,nationalId)
+    console.log(address,city,postalCode,country)
+    console.log(employmentStatus,jobTitle,companyName,salary,otherIncomeSource)
+    console.log(amount,purpose,term,method)
+  }
+
   //  const fields = [
   //    {
   //      type: "text",
@@ -243,6 +250,7 @@ const LoanRequestForm = () => {
   const submitHandler = () => {
     event.preventDefault();
     console.log(" clicked");
+    personalData()
   };
 
   return (

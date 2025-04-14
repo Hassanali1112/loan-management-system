@@ -52,13 +52,18 @@ export default function Dashboard() {
       <Box component="main" sx={{ flexGrow: 1, p: 4 }}>
         <Topbar />
 
-        <Typography variant="h4" fontWeight={700} mb={4}>
+        <Typography variant="h4" fontWeight={700} mb={2}>
           Dashboard Overview
         </Typography>
 
-        <Grid container spacing={3} mb={5}>
+        <Grid container spacing={2} mb={5}>
           {stats.map(({ label, value, icon, color }) => (
-            <Grid item xs={12} sm={6} md={3} key={label}>
+            <Grid size={{ sm : 6, md : 3 }}
+              // xs={12}
+              // sm={8}
+              // md={5}
+              key={label}
+            >
               <Paper
                 elevation={3}
                 sx={{

@@ -9,6 +9,8 @@ import Registeration from "./Pages/auth/Registeration.jsx";
 import LoanRequest from "./Pages/loan/LoanRequest.jsx";
 import Dashboard from "./Pages/Dashboard.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Profile from "./Pages/Profile.jsx";
+import MultiStepLoanForm from "./Pages/MultiStepForm.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -18,7 +20,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/signup" element={<Registeration />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/loanrequest" element={<LoanRequest />} />
+        <Route path="/loanrequest" element={<MultiStepLoanForm />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

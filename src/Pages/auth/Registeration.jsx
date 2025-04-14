@@ -1,177 +1,128 @@
-import React, { useState } from 'react'
-import Form from '../../Components/Form/Form'
-import { Button } from 'react-bootstrap'
-import { supabase } from '../../Utils/config'
-import "./auth.css"
+import React, { useState } from "react";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { supabase } from "../../Utils/config";
+import Paper from "@mui/material/Paper";
 
-const Registeration = () => {
-  
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confPassword, setConfPassword] = useState('')
-  const [number, setNumber] = useState('')
+// import "./auth.css";
 
+const Registration = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confPassword, setConfPassword] = useState("");
+  const [number, setNumber] = useState("");
 
   const fields = [
     {
       type: "text",
       value: name,
       update: setName,
-      name: "full name",
-      requrire: true,
+      label: "Full Name",
       id: "nameInput",
     },
     {
       type: "email",
       value: email,
       update: setEmail,
-      name: "email",
-      require: true,
+      label: "Email",
       id: "emailInput",
     },
     {
       type: "password",
       value: password,
       update: setPassword,
-      name: "password",
-      require: true,
+      label: "Password",
       id: "passwordInput",
     },
     {
       type: "password",
       value: confPassword,
       update: setConfPassword,
-      name: "Confirm password",
-      require: true,
+      label: "Confirm Password",
       id: "confPasswordInput",
     },
     {
       type: "number",
       value: number,
       update: setNumber,
-      name: "number",
-      require: true,
+      label: "Phone Number",
       id: "numberInput",
     },
   ];
 
-  const submitHandler = async (event) =>{
-    event.preventDefault()
-    let nameRegex = /^[A-Za-z]+ [A-Za-z]+$/
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    let nameRegex = /^[A-Za-z]+ [A-Za-z]+$/;
     let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    let passwordRexex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    let passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     let numberRegex = /^(?:\+92|0092|92|0)?3[0-9]{9}$/;
 
+    if (
+      nameRegex.test(name) &&
+      emailRegex.test(email) &&
+      passwordRegex.test(password) &&
+      password === confPassword &&
+      numberRegex.test(number)
+    ) {
+      try {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
 
-
-
-    if(nameRegex.test(name)){
-      console.log("done")
-      if(emailRegex.test(email)){
-      console.log("done");
-      if(passwordRexex.test(password)){
-      console.log("done");
-        if(password === confPassword){
-      console.log("done");
-          if(numberRegex.test(number)){
-            console.log("finally done")
-            try {
-              const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                      })
-                      if(error) throw error;
-                      if(data) {
-                        console.log(data)
-                        const { data : newUserData , error : newUserDataError } = await supabase
-                          .from("users")
-                          .insert({  
-                            name,
-                            email,
-                            password,
-                            number,
-                            })
-                          .select();
-                          if(newUserData){
-                            console.log(newUserData)
-                            window.location.assign("/login");
-                          } else{
-                            console.log(newUserDataError)
-                          }
-                      }
-                  
-            } catch (error) {
-              console.log(error)
-            }
-          } else{
-      console.log("number is incorrect formate");
-
-          }
-          
-        } else{
-      console.log("passwords did not match");
-
+        if (data) {
+          await supabase
+            .from("users")
+            .insert({ name, email, password, number })
+            .select();
+          window.location.assign("/login");
         }
-      } else{
-      console.log("password is incorrect formate");
-
+      } catch (error) {
+        console.log(error);
       }
-
-      } else{
-      console.log("email is incorrect formate");
-
-      }
-    }else{
-      console.log("name is incorrect formate")
+    } else {
+      console.log("Form validation failed");
     }
-    // console.log(name,email,password,confPassword,number)
-    // alert("submit hit")
-    setEmail("")
-    setName("")
-    setPassword("")
-    setConfPassword("")
-    setNumber("")
-
-  }
+  };
 
   return (
-    <>
-      <div className="form_Container container">
-        <form className='form' onSubmit={submitHandler}>
-          <h2 className="text-center">Sign Up Form</h2>
-          {fields.map((field, index) => {
-            // console.log(field)
-            return (
-              <Form field={field} index={index} key={index} />
-              // <div className="form-group py-2" key={index}>
-              //   <label className="text-capitalize" htmlFor={input.id}>
-              //     {input.name} :
-              //   </label>
-              //   <input
-              //   value={input.value}
-              //   onChange={(e)=>{
-              //     input.update(e.target.value)
-              //   }}
-              //     type={input.type}
-              //     className="form-control"
-              //     id={input.id}
-              //     placeholder={input.name}
-              //   />
-              // </div>
-            );
-          })}
-
-          {/* render the button component! */}
-          <input
-            type="submit"
-            value={"Submit"}
-            className="btn"
-          />
+    <Container
+      variant={"paper"}
+      maxWidth="sm"
+      sx={{ marginTop: 5, }}
+    >
+      <Paper elevation={3} sx={{padding: 3, border: "1px solid gray" }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Sign Up
+        </Typography>
+        <form onSubmit={submitHandler}>
+          {fields.map((field, index) => (
+            <TextField
+              key={index}
+              label={field.label}
+              type={field.type}
+              value={field.value}
+              onChange={(e) => field.update(e.target.value)}
+              fullWidth
+              margin="normal"
+              required
+            />
+          ))}
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+            <Button
+              variant="contained"
+              color="success"
+              type="submit"
+              size="large"
+              fullWidth
+            >
+              Sign Up
+            </Button>
+          </Box>
         </form>
-      </div>
-    </>
+      </Paper>
+    </Container>
   );
-}
+};
 
-export default Registeration
+export default Registration;

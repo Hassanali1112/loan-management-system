@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import Form from "../../Components/Form/Form";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { supabase } from "../../Utils/config";
+import Paper from "@mui/material/Paper";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,70 +12,80 @@ const Login = () => {
       type: "email",
       value: email,
       update: setEmail,
-      name: "email",
-      require: true,
+      label: "Email",
       id: "emailInput",
     },
     {
       type: "password",
       value: password,
       update: setPassword,
-      name: "password",
-      require: true,
+      label: "Password",
       id: "passwordInput",
     },
   ];
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    console.log(email, password);
-
     try {
       const { data, error } = await supabase.auth.getSession();
 
       if (data) {
-        console.log(data);
-        const { data : userData, error : userDataError } = await supabase
+        const { data: userData, error: userDataError } = await supabase
           .from("users")
           .select()
           .eq("email", email);
-          if(userData){
-            console.log(userData)
-            const activeUser = {
-              name : userData[0].name,
-              email : userData[0].email,
-              number : userData[0].number,
-            }
-            console.log(activeUser)
-            localStorage.setItem("activeUser", JSON.stringify(activeUser))
-          } else{
-            console.log(userDataError)
-          }
+        if (userData) {
+          const activeUser = {
+            name: userData[0].name,
+            email: userData[0].email,
+            number: userData[0].number,
+          };
+          localStorage.setItem("activeUser", JSON.stringify(activeUser));
+        } else {
+          console.log(userDataError);
+        }
         window.location.assign("/userdashboard");
-      } else{
-        throw error
+      } else {
+        throw error;
       }
     } catch (error) {
       console.log(error);
     }
-    
-    setEmail("");
-
-    setPassword("");
   };
-  return (
-    <div className="form_Container">
-      <form className="form" onSubmit={submitHandler}>
-        <h2>Sign Up form</h2>
-        {fields.map((field, index) => {
-          
-          return <Form field={field} index={index} key={index} />;
-        })}
 
-        {/* render the button component! */}
-        <input type="submit" value={"Submit"} className="btn btn-success" />
-      </form>
-    </div>
+  return (
+    <Container maxWidth="sm" sx={{ marginTop: 5 }}>
+      <Paper elevation={3} sx={{ padding: 3, border: "1px solid gray" }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Login
+        </Typography>
+        <form onSubmit={submitHandler}>
+          {fields.map((field, index) => (
+            <TextField
+              key={index}
+              label={field.label}
+              type={field.type}
+              value={field.value}
+              onChange={(e) => field.update(e.target.value)}
+              fullWidth
+              margin="normal"
+              required
+            />
+          ))}
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              size="large"
+              fullWidth
+            >
+              Login
+            </Button>
+          </Box>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { supabase } from "../Utils/config";
 import {
   Box,
   Button,
@@ -12,34 +13,53 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Sidebar from "../components/Sidebar";
 
-const steps = ["Loan Details", "Loan Purpose", "Financial Info"];
+import Swal from "sweetalert2";
+
+const steps = ["Personal Details", "Loan Details", "Employment Details"];
 
 const validationSchemas = [
+  // Step 0 - Personal Details
   Yup.object({
     name: Yup.string().required("Full name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    cnic: Yup.string()
+      .matches(/^[0-9]{13}$/, "CNIC must be 13 digits")
+      .required("CNIC is required"),
     amount: Yup.number()
       .typeError("Must be a number")
       .required("Amount is required"),
   }),
+
+  // Step 1 - Loan Details
   Yup.object({
     duration: Yup.number()
       .typeError("Must be a number")
       .required("Duration is required"),
     purpose: Yup.string().required("Purpose is required"),
   }),
+
+  // Step 2 - Employment Details
   Yup.object({
     income: Yup.number()
       .typeError("Must be a number")
       .required("Income is required"),
+    company: Yup.string().required("Company name is required"),
   }),
 ];
 
+
+
+
 const initialValues = {
   name: "",
+  email : "",
+  cnic : "",
   amount: "",
   duration: "",
   purpose: "",
   income: "",
+  company :"",
+  
 };
 
 const MultiStepLoanForm = () => {
@@ -47,11 +67,29 @@ const MultiStepLoanForm = () => {
 
   const isLastStep = activeStep === steps.length - 1;
 
-  const handleSubmit = (values, actions) => {
+  const handleSubmit = async (values, actions) => {
     if (isLastStep) {
       console.log("Submitted Data:", values);
+
+      try {
+        const { data, error } = await supabase
+  .from('loans')
+  .insert({ name : values.name , email : values.email, cnic : values.cnic, amount : values.amount,
+     duration : values.duration, purpose : values.purpose, income : values.income, company : values.company})
+  .select()
+  if(error){
+    throw error
+  } else {
+    console.log(data)
+    Swal.fire("Your request has been submited")
+    actions.resetForm();
+  }
+      } catch (error) {
+        console.log(error)
+      }
+
       actions.setSubmitting(false);
-      // TODO: Send to Supabase or backend
+      
     } else {
       setActiveStep((prev) => prev + 1);
       actions.setTouched({});
@@ -66,15 +104,37 @@ const MultiStepLoanForm = () => {
       case 0:
         return (
           <>
-          <Sidebar />
+            <Sidebar />
+
             <Field
               as={TextField}
               fullWidth
               name="name"
               label="Full Name"
               margin="normal"
+             
               helperText={<ErrorMessage name="name" />}
               error={<ErrorMessage name="name" /> ? true : false}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              name="email"
+              label="Your Email"
+              margin="normal"
+              
+              helperText={<ErrorMessage name="email" />}
+              error={<ErrorMessage name="email" /> ? true : false}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              name="cnic"
+              label="CNIC No"
+              margin="normal"
+             
+              helperText={<ErrorMessage name="cnic" />}
+              error={<ErrorMessage name="cnic" /> ? true : false}
             />
             <Field
               as={TextField}
@@ -82,6 +142,7 @@ const MultiStepLoanForm = () => {
               name="amount"
               label="Loan Amount"
               margin="normal"
+              
               helperText={<ErrorMessage name="amount" />}
               error={<ErrorMessage name="amount" /> ? true : false}
             />
@@ -90,12 +151,15 @@ const MultiStepLoanForm = () => {
       case 1:
         return (
           <>
+            <Sidebar />
+
             <Field
               as={TextField}
               fullWidth
               name="duration"
               label="Loan Duration (months)"
               margin="normal"
+            
               helperText={<ErrorMessage name="duration" />}
               error={<ErrorMessage name="duration" /> ? true : false}
             />
@@ -105,6 +169,7 @@ const MultiStepLoanForm = () => {
               name="purpose"
               label="Purpose of Loan"
               margin="normal"
+           
               helperText={<ErrorMessage name="purpose" />}
               error={<ErrorMessage name="purpose" /> ? true : false}
             />
@@ -112,16 +177,32 @@ const MultiStepLoanForm = () => {
         );
       case 2:
         return (
-          <Field
-            as={TextField}
-            fullWidth
-            name="income"
-            label="Monthly Income"
-            margin="normal"
-            helperText={<ErrorMessage name="income" />}
-            error={<ErrorMessage name="income" /> ? true : false}
-          />
+          <>
+            <Sidebar />
+
+            <Field
+              as={TextField}
+              fullWidth
+              name="income"
+              label="Monthly Income"
+              margin="normal"
+              
+              helperText={<ErrorMessage name="income" />}
+              error={<ErrorMessage name="income" /> ? true : false}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              name="company"
+              label="Company Name"
+              margin="normal"
+              
+              helperText={<ErrorMessage name="company" />}
+              error={<ErrorMessage name="company" /> ? true : false}
+            />
+          </>
         );
+
       default:
         return null;
     }

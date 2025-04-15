@@ -21,7 +21,7 @@ import AddCardIcon from "@mui/icons-material/AddCard";
 
 const navItems = [
   { label: "Dashboard", icon: <DashboardIcon />, path: "/" },
-  { label: "Loans Requests", icon: <MonetizationOnIcon />, path: "/signup" },
+  { label: "Loans Requests", icon: <MonetizationOnIcon />, path: "/loanhistory" },
   { label: "Create Loan Request", icon: <AddCardIcon />, path: "/loanrequest" },
   { label: "My Profile", icon: <FaceIcon />, path: "/profile" },
   { label: "Logout", icon: <LogoutIcon />, path: "/" },

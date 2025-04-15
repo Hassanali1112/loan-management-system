@@ -1,10 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Typography, Container, Paper, Grid } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { supabase } from "./Utils/config";
 
 const App = () => {
   const [isSignInActive, setIsSignInActive] = useState(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const getSession = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        throw error;
+      } else {
+        console.log(data);
+        if (data.session) {
+          console.log("session");
+          navigate("/dashboard");
+        } else {
+          navigate("/")
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSession();
+  });
 
   const handleTabChange = (tab) => {
     if (tab === "/login") {
@@ -12,7 +36,7 @@ const App = () => {
       navigate("/login");
     } else {
       setIsSignInActive(false);
-      navigate("/signup" )
+      navigate("/signup");
     }
   };
 

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { supabase } from "../../Utils/config";
 import Paper from "@mui/material/Paper";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 // import "./auth.css";
 
@@ -49,6 +51,30 @@ const Registration = () => {
       id: "numberInput",
     },
   ];
+  const navigate = useNavigate();
+
+  const getSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          throw error;
+        } else {
+          console.log(data);
+          if (data.session) {
+            console.log("session");
+            navigate("/dashboard");
+          } else {
+            navigate("/")
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    useEffect(() => {
+      getSession();
+    });
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -75,7 +101,9 @@ const Registration = () => {
             .from("users")
             .insert({ name, email, password, number })
             .select();
-          window.location.assign("/login");
+
+          Swal.fire("Kindly confirm your email!");
+          navigate("/login");
         }
       } catch (error) {
         console.log(error);
@@ -86,12 +114,8 @@ const Registration = () => {
   };
 
   return (
-    <Container
-      variant={"paper"}
-      maxWidth="sm"
-      sx={{ marginTop: 5, }}
-    >
-      <Paper elevation={3} sx={{padding: 3, border: "1px solid gray" }}>
+    <Container variant={"paper"} maxWidth="sm" sx={{ marginTop: 5 }}>
+      <Paper elevation={3} sx={{ padding: 3, border: "1px solid gray" }}>
         <Typography variant="h4" align="center" gutterBottom>
           Sign Up
         </Typography>

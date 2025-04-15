@@ -1,11 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { supabase } from "../../Utils/config";
 import Paper from "@mui/material/Paper";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const getSession = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        throw error;
+      } else {
+        console.log(data);
+        if (data.session) {
+          console.log("session");
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSession();
+  });
 
   const fields = [
     {
@@ -44,7 +69,7 @@ const Login = () => {
         } else {
           console.log(userDataError);
         }
-        window.location.assign("/userdashboard");
+        window.location.assign("/dashboard");
       } else {
         throw error;
       }
